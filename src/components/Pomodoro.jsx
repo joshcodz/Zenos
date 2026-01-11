@@ -116,6 +116,8 @@ export default function Pomodoro({ onClose }) {
         fontWeight: 600,
     };
 
+
+
     const neutralButton = {
         ...baseButton,
     };
