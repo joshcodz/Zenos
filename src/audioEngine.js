@@ -1,43 +1,25 @@
+/* 🎵 MASTER PLAYLIST */
+export const playlist = [
+    { title: "Aurai - Our Dawn", file: "/music/Aurai - Our Dawn.mp3" },
+    { title: "Lookz - Childhood Dreams", file: "/music/Chillstep  Lookz - Childhood Dreams.mp3" },
+    { title: "Wiljan & cluda - The Unknown", file: "/music/Wiljan & cluda - The Unknown.mp3" },
+];
+
 const audio = new Audio();
-audio.crossOrigin = "anonymous";
+audio.loop = false;
 
-const state = {
-    trackIndex: Number(localStorage.getItem("music-track")) || 0,
-    volume: Number(localStorage.getItem("music-volume")) || 0.7,
-};
+let index = Number(localStorage.getItem("music-index")) || 0;
+let volume = Number(localStorage.getItem("music-volume")) || 0.8;
 
-audio.volume = state.volume;
+audio.src = playlist[index].file;
+audio.volume = volume;
 
-export const playlists = {
-    lofi: [
-        {
-            title: "Lo-Fi Chill",
-            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        },
-        {
-            title: "Late Night Coding",
-            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        },
-    ],
+/* Auto next */
+audio.addEventListener("ended", () => {
+    next();
+});
 
-    radio: [
-        {
-            title: "Chillhop Radio",
-            url: "https://stream.zeno.fm/f3wvbbqmdg8uv",
-        },
-    ],
-};
-
-let currentPlaylist = "lofi";
-
-function loadTrack() {
-    const track = playlists[currentPlaylist][state.trackIndex];
-    audio.src = track.url;
-}
-
-loadTrack();
-
-/* ---------------- Controls ---------------- */
+/* Controls */
 
 export function play() {
     audio.play();
@@ -48,33 +30,33 @@ export function pause() {
 }
 
 export function next() {
-    const list = playlists[currentPlaylist];
-    state.trackIndex = (state.trackIndex + 1) % list.length;
-    localStorage.setItem("music-track", state.trackIndex);
-    loadTrack();
-    play();
+    index = (index + 1) % playlist.length;
+    audio.src = playlist[index].file;
+    audio.play();
+    localStorage.setItem("music-index", index);
+}
+
+export function setTrack(i) {
+    index = i;
+    audio.src = playlist[index].file;
+    audio.play();
+    localStorage.setItem("music-index", index);
+}
+
+export function seek(t) {
+    audio.currentTime = t;
 }
 
 export function setVolume(v) {
+    volume = v;
     audio.volume = v;
-    state.volume = v;
     localStorage.setItem("music-volume", v);
-}
-
-export function seek(time) {
-    audio.currentTime = time;
-}
-
-export function setPlaylist(name) {
-    currentPlaylist = name;
-    state.trackIndex = 0;
-    loadTrack();
 }
 
 export function getAudio() {
     return audio;
 }
 
-export function getCurrentTrack() {
-    return playlists[currentPlaylist][state.trackIndex];
+export function getIndex() {
+    return index;
 }

@@ -1,23 +1,38 @@
+import { useEffect, useState } from "react";
+
 import Dock from "./components/Dock";
 import PomodoroWidget from "./components/PomodoroWidget";
 import TodoWidget from "./components/TodoWidget";
 import DigitalClock from "./components/DigitalClock";
+import MiniPlayer from "./components/MiniPlayer";
+import BackgroundSelector from "./components/BackgroundSelector";
 
 export default function App() {
+    const [background, setBackground] = useState(
+        localStorage.getItem("bg") || "/backgrounds/skyline.mp4"
+    );
+
+    /* Save background */
+    useEffect(() => {
+        localStorage.setItem("bg", background);
+    }, [background]);
+
     return (
         <div style={{ position: "fixed", inset: 0, overflow: "hidden" }}>
-            {/* 🎥 Background */}
+            {/* 🎥 Background Video */}
             <video
+                key={background}
                 autoPlay
                 loop
                 muted
-                src="/study.mp4"
+                src={background}
                 style={{
                     position: "absolute",
                     inset: 0,
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
+                    transition: "opacity 0.5s ease",
                 }}
             />
 
@@ -30,10 +45,17 @@ export default function App() {
                 }}
             />
 
+            {/* 🎨 Background Selector */}
+            <BackgroundSelector
+                current={background}
+                onChange={setBackground}
+            />
+
             {/* Widgets */}
             <DigitalClock />
             <PomodoroWidget />
             <TodoWidget />
+            <MiniPlayer />
 
             {/* Dock */}
             <Dock />

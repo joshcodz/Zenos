@@ -8,7 +8,7 @@ import musicIcon from "../assets/icons/music.png";
 import Pomodoro from "./Pomodoro";
 import Todo from "./Todo";
 import Notes from "./Notes";
-import Music from "./Music";
+import MusicPanel from "./MusicPanel";
 
 const icons = [
     { name: "Pomodoro", icon: pomodoroIcon },
@@ -21,28 +21,21 @@ export default function Dock() {
     const [visible, setVisible] = useState(false);
     const [activePanel, setActivePanel] = useState(null);
 
-    /* ---------------- Auto-hide logic ---------------- */
-
+    /* Auto hide dock */
     useEffect(() => {
         function handleMouseMove(e) {
-            const screenHeight = window.innerHeight;
-
-            if (e.clientY > screenHeight - 80) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
+            const h = window.innerHeight;
+            setVisible(e.clientY > h - 80);
         }
 
         window.addEventListener("mousemove", handleMouseMove);
-        return () => window.removeEventListener("mousemove", handleMouseMove);
+        return () =>
+            window.removeEventListener("mousemove", handleMouseMove);
     }, []);
 
     function togglePanel(name) {
         setActivePanel((prev) => (prev === name ? null : name));
     }
-
-    /* ---------------- UI ---------------- */
 
     return (
         <div
@@ -52,10 +45,9 @@ export default function Dock() {
                 left: 0,
                 right: 0,
                 zIndex: 9999,
-                pointerEvents: "auto",
             }}
         >
-            {/* 🚀 Sliding Embedded Panel */}
+            {/* 🚀 Embedded Panel */}
             {activePanel && (
                 <div
                     style={{
@@ -84,12 +76,12 @@ export default function Dock() {
                     )}
 
                     {activePanel === "Music" && (
-                        <Music onClose={() => setActivePanel(null)} />
+                        <MusicPanel onClose={() => setActivePanel(null)} />
                     )}
                 </div>
             )}
 
-            {/* 🧭 Dock Bar */}
+            {/* 🧭 Dock */}
             <div
                 style={{
                     display: "flex",
@@ -117,7 +109,6 @@ export default function Dock() {
                            transition-all duration-300 ease-out
                            hover:-translate-y-1 hover:scale-125"
                             >
-                                {/* Icon */}
                                 <img
                                     src={icon.icon}
                                     draggable="false"
@@ -125,11 +116,12 @@ export default function Dock() {
                                         width: 30,
                                         height: 30,
                                         objectFit: "contain",
-                                        filter: active ? "drop-shadow(0 0 6px white)" : "none",
+                                        filter: active
+                                            ? "drop-shadow(0 0 6px white)"
+                                            : "none",
                                     }}
                                 />
 
-                                {/* Label */}
                                 <span
                                     className="text-[10px] text-white/70 mt-1 opacity-0
                              transition-opacity duration-300
@@ -138,7 +130,6 @@ export default function Dock() {
                   {icon.name}
                 </span>
 
-                                {/* Active Indicator */}
                                 {active && (
                                     <div
                                         style={{
