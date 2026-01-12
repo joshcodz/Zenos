@@ -1,22 +1,20 @@
 import { useEffect, useState } from "react";
-import Draggable from "./Draggable";
 
-export default function Pomodoro({ onClose }) {
+export default function Pomodoro({ onClose, embedded = false }) {
+    const fonts = {
+        body: "'Inter', system-ui, sans-serif",
+        mono: "'JetBrains Mono', monospace",
+    };
+
     const [focusMin, setFocusMin] = useState(
         Number(localStorage.getItem("gradiumx-focus")) || 25
     );
     const [breakMin, setBreakMin] = useState(
         Number(localStorage.getItem("gradiumx-break")) || 5
     );
-
-    const [mode, setMode] = useState(
-        localStorage.getItem("gradiumx-pomodoro-mode") || "focus"
-    );
-
     const [running, setRunning] = useState(
         localStorage.getItem("gradiumx-pomodoro-running") === "true"
     );
-
     const [enabled, setEnabled] = useState(
         localStorage.getItem("gradiumx-pomodoro-enabled") === "true"
     );
@@ -24,21 +22,15 @@ export default function Pomodoro({ onClose }) {
     const FOCUS = focusMin * 60;
     const BREAK = breakMin * 60;
 
-    /* Persist settings */
     useEffect(() => {
         localStorage.setItem("gradiumx-focus", focusMin);
         localStorage.setItem("gradiumx-break", breakMin);
     }, [focusMin, breakMin]);
 
-    /* ---------- TIMER CONTROL (BACKGROUND SAFE) ---------- */
-
     function startTimer() {
-        const duration = mode === "focus" ? FOCUS : BREAK;
-        const endTime = Date.now() + duration * 1000;
-
+        const endTime = Date.now() + FOCUS * 1000;
         localStorage.setItem("gradiumx-pomodoro-end", String(endTime));
         localStorage.setItem("gradiumx-pomodoro-running", "true");
-
         window.dispatchEvent(new Event("gradiumx-pomodoro-update"));
         setRunning(true);
     }
@@ -49,14 +41,6 @@ export default function Pomodoro({ onClose }) {
         setRunning(false);
     }
 
-    function resetTimer() {
-        const duration = mode === "focus" ? FOCUS : BREAK;
-        const endTime = Date.now() + duration * 1000;
-
-        localStorage.setItem("gradiumx-pomodoro-end", String(endTime));
-        window.dispatchEvent(new Event("gradiumx-pomodoro-update"));
-    }
-
     function toggleWidget() {
         const next = !enabled;
         setEnabled(next);
@@ -64,137 +48,92 @@ export default function Pomodoro({ onClose }) {
         window.dispatchEvent(new Event("gradiumx-pomodoro-update"));
     }
 
-    /* ---------- UI HELPERS ---------- */
-
-    function getRemaining() {
-        const end = Number(localStorage.getItem("gradiumx-pomodoro-end")) || 0;
-        const diff = Math.max(0, Math.floor((end - Date.now()) / 1000));
-        return diff;
-    }
-
-    const remaining = getRemaining();
-    const mins = String(Math.floor(remaining / 60)).padStart(2, "0");
-    const secs = String(remaining % 60).padStart(2, "0");
-
-    /* ---------- STYLES ---------- */
+    const panelStyle = {
+        width: embedded ? 340 : 440,
+        padding: embedded ? 14 : 26,
+        borderRadius: 18,
+        background: "rgba(20,20,20,0.55)",
+        backdropFilter: "blur(18px)",
+        color: "white",
+        fontFamily: fonts.body,
+    };
 
     const inputStyle = {
         flex: 1,
-        padding: "10px 12px",
+        height: 34,
+        padding: "4px 10px",
         borderRadius: 10,
         border: "1px solid rgba(255,255,255,0.25)",
         outline: "none",
-        background: "rgba(255,255,255,0.15)",
+        background: "rgba(255,255,255,0.14)",
         color: "white",
-        fontSize: 14,
+        fontSize: 13,
+        fontFamily: fonts.body,
+        backdropFilter: "blur(6px)",
     };
 
-    const baseButton = {
+    const button = {
         flex: 1,
-        padding: "10px 12px",
+        height: 34,
         borderRadius: 12,
         border: "1px solid rgba(255,255,255,0.25)",
         background: "rgba(255,255,255,0.15)",
         color: "white",
+        fontSize: 13,
         cursor: "pointer",
-        transition: "all 0.2s ease",
-        backdropFilter: "blur(6px)",
-        fontSize: 14,
-    };
-
-    const primaryButton = {
-        ...baseButton,
-        background: "linear-gradient(135deg, #4ade80, #22c55e)",
-        color: "#052e16",
-        fontWeight: 600,
-    };
-
-    const dangerButton = {
-        ...baseButton,
-        background: "linear-gradient(135deg, #f87171, #ef4444)",
-        color: "#450a0a",
-        fontWeight: 600,
-    };
-
-
-
-    const neutralButton = {
-        ...baseButton,
+        backdropFilter: "blur(8px)",
     };
 
     return (
-        <Draggable>
+        <div style={panelStyle}>
             <div
                 style={{
-                    background: "rgba(25,25,25,0.75)",
-                    backdropFilter: "blur(18px)",
-                    padding: 24,
-                    borderRadius: 20,
-                    color: "white",
-                    width: 440,
+                    fontSize: embedded ? 34 : 52,
+                    textAlign: "center",
+                    fontFamily: fonts.mono,
+                    marginBottom: 10,
+                    letterSpacing: 2,
                 }}
             >
-                <h2 style={{ marginBottom: 12 }}>
-                    ⏱ Pomodoro — {mode.toUpperCase()}
-                </h2>
+                25:00
+            </div>
 
-                {/* ⏲ Time */}
-                <div
-                    style={{
-                        fontSize: 56,
-                        textAlign: "center",
-                        marginBottom: 16,
-                        fontFamily: "monospace",
-                        letterSpacing: 2,
-                    }}
-                >
-                    {mins}:{secs}
-                </div>
+            {/* Inputs */}
+            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+                <input
+                    type="number"
+                    value={focusMin}
+                    onChange={(e) => setFocusMin(Number(e.target.value))}
+                    placeholder="Focus"
+                    style={inputStyle}
+                />
 
-                {/* ⌨ Inputs */}
-                <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-                    <input
-                        type="number"
-                        placeholder="Focus (minutes)"
-                        value={focusMin}
-                        onChange={(e) => setFocusMin(Number(e.target.value))}
-                        style={inputStyle}
-                    />
+                <input
+                    type="number"
+                    value={breakMin}
+                    onChange={(e) => setBreakMin(Number(e.target.value))}
+                    placeholder="Break"
+                    style={inputStyle}
+                />
+            </div>
 
-                    <input
-                        type="number"
-                        placeholder="Break (minutes)"
-                        value={breakMin}
-                        onChange={(e) => setBreakMin(Number(e.target.value))}
-                        style={inputStyle}
-                    />
-                </div>
-
-                {/* 🎛 Controls */}
-                <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
-                    <button
-                        style={primaryButton}
-                        onClick={() => (running ? pauseTimer() : startTimer())}
-                    >
-                        {running ? "Pause" : "Start"}
-                    </button>
-
-                    <button style={neutralButton} onClick={resetTimer}>
-                        Reset
-                    </button>
-
-                    <button style={neutralButton} onClick={toggleWidget}>
-                        {enabled ? "Disable Dashboard" : "Enable Dashboard"}
-                    </button>
-                </div>
-
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: 8 }}>
                 <button
-                    style={{ ...dangerButton, width: "100%" }}
-                    onClick={onClose}
+                    style={button}
+                    onClick={() => (running ? pauseTimer() : startTimer())}
                 >
+                    {running ? "Pause" : "Start"}
+                </button>
+
+                <button style={button} onClick={toggleWidget}>
+                    {enabled ? "Hide Widget" : "Show Widget"}
+                </button>
+
+                <button style={button} onClick={onClose}>
                     Close
                 </button>
             </div>
-        </Draggable>
+        </div>
     );
 }

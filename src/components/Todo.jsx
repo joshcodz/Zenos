@@ -1,117 +1,168 @@
 import { useEffect, useState } from "react";
 
-export default function Todo({ onClose }) {
+export default function Todo({ onClose, embedded = false }) {
+    const fonts = {
+        body: "'Inter', system-ui, sans-serif",
+    };
+
     const [tasks, setTasks] = useState(() => {
         const saved = localStorage.getItem("gradiumx-tasks");
         return saved ? JSON.parse(saved) : [];
     });
 
-    const [input, setInput] = useState("");
+    const [text, setText] = useState("");
 
     useEffect(() => {
         localStorage.setItem("gradiumx-tasks", JSON.stringify(tasks));
         window.dispatchEvent(new Event("gradiumx-tasks-updated"));
     }, [tasks]);
 
-
     function addTask() {
-        if (!input.trim()) return;
-        setTasks([...tasks, { text: input, done: false }]);
-        setInput("");
+        if (!text.trim()) return;
+        setTasks([...tasks, { text, done: false }]);
+        setText("");
     }
 
-    function toggleTask(index) {
-        const updated = [...tasks];
-        updated[index].done = !updated[index].done;
-        setTasks(updated);
+    function toggleDone(index) {
+        const copy = [...tasks];
+        copy[index].done = !copy[index].done;
+        setTasks(copy);
     }
 
-    function deleteTask(index) {
-        const updated = [...tasks];
-        updated.splice(index, 1);
-        setTasks(updated);
+    function removeTask(index) {
+        const copy = [...tasks];
+        copy.splice(index, 1);
+        setTasks(copy);
     }
+
+    const panelStyle = {
+        width: embedded ? 360 : 440,
+        minHeight: embedded ? 240 : 320,
+        padding: embedded ? 16 : 26,
+        borderRadius: 18,
+        background: "rgba(20,20,20,0.55)",
+        backdropFilter: "blur(18px)",
+        color: "white",
+        fontFamily: fonts.body,
+        display: "flex",
+        flexDirection: "column",
+    };
+
+    const inputStyle = {
+        height: 34,
+        padding: "4px 12px",
+        borderRadius: 10,
+        border: "1px solid rgba(255,255,255,0.25)",
+        outline: "none",
+        background: "rgba(255,255,255,0.14)",
+        color: "white",
+        fontSize: 13,
+        backdropFilter: "blur(6px)",
+        marginBottom: 12,
+    };
+
+    const checkboxOuter = {
+        width: 26,
+        height: 26,
+        borderRadius: 8,
+        border: "1.5px solid rgba(255,255,255,0.45)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        background: "rgba(255,255,255,0.08)",
+        backdropFilter: "blur(6px)",
+        transition: "all 0.2s ease",
+    };
+
+    const checkboxInner = {
+        width: 14,
+        height: 14,
+        borderRadius: 4,
+        background: "linear-gradient(135deg, #4ade80, #22c55e)",
+    };
+
+    const trashButton = {
+        fontSize: 16,
+        cursor: "pointer",
+        background: "transparent",
+        border: "none",
+        opacity: 0.8,
+    };
+
+    const minimizeButton = {
+        marginTop: "auto",
+        height: 36,
+        borderRadius: 14,
+        border: "1px solid rgba(255,255,255,0.25)",
+        background: "rgba(255,255,255,0.12)",
+        color: "white",
+        cursor: "pointer",
+        fontSize: 14,
+        backdropFilter: "blur(10px)",
+    };
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                bottom: "140px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                background: "rgba(255,255,255,0.12)",
-                backdropFilter: "blur(20px)",
-                padding: "20px",
-                borderRadius: "16px",
-                color: "white",
-                width: "360px",
-                zIndex: 9999,
-            }}
-        >
-            <h2 style={{ fontSize: 20, marginBottom: 12 }}>✅ To-Do List</h2>
-
+        <div style={panelStyle}>
             {/* Input */}
-            <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
-                <input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Add new task..."
-                    style={{
-                        flex: 1,
-                        padding: 8,
-                        borderRadius: 6,
-                        border: "none",
-                        outline: "none",
-                    }}
-                />
+            <input
+                placeholder="Type task + Enter"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addTask()}
+                style={inputStyle}
+            />
 
-                <button onClick={addTask}>Add</button>
-            </div>
-
-            {/* Task List */}
-            <div style={{ maxHeight: 200, overflowY: "auto" }}>
-                {tasks.length === 0 && (
-                    <p style={{ opacity: 0.6 }}>No tasks yet 👀</p>
-                )}
-
+            {/* Tasks */}
+            <div style={{ flex: 1, overflowY: "auto" }}>
                 {tasks.map((task, index) => (
                     <div
                         key={index}
                         style={{
                             display: "flex",
                             alignItems: "center",
-                            gap: 8,
-                            marginBottom: 6,
+                            gap: 12,
+                            marginBottom: 10,
+                            opacity: task.done ? 0.55 : 1,
                         }}
                     >
-                        <input
-                            type="checkbox"
-                            checked={task.done}
-                            onChange={() => toggleTask(index)}
-                        />
+                        {/* Checkbox */}
+                        <div
+                            style={{
+                                ...checkboxOuter,
+                                borderColor: task.done
+                                    ? "#4ade80"
+                                    : "rgba(255,255,255,0.45)",
+                            }}
+                            onClick={() => toggleDone(index)}
+                        >
+                            {task.done && <div style={checkboxInner} />}
+                        </div>
 
+                        {/* Text */}
                         <span
                             style={{
                                 flex: 1,
+                                fontSize: 14,
                                 textDecoration: task.done ? "line-through" : "none",
-                                opacity: task.done ? 0.5 : 1,
                             }}
                         >
               {task.text}
             </span>
 
-                        <button onClick={() => deleteTask(index)}>❌</button>
+                        {/* Delete */}
+                        <button
+                            style={trashButton}
+                            onClick={() => removeTask(index)}
+                        >
+                            🗑️
+                        </button>
                     </div>
                 ))}
             </div>
 
-            <button
-                onClick={onClose}
-                style={{
-                    marginTop: 10,
-                    width: "100%",
-                }}
-            >
+            {/* Minimize */}
+            <button style={minimizeButton} onClick={onClose}>
                 Close
             </button>
         </div>

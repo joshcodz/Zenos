@@ -2,64 +2,75 @@ import { useEffect, useState } from "react";
 import Draggable from "./Draggable";
 
 export default function TodoWidget() {
+    /* ---------------- FONT SYSTEM ---------------- */
+
+    const fonts = {
+        title: "'Montreal', system-ui, sans-serif",
+        body: "'Roboto', system-ui, sans-serif",
+    };
+
     const [tasks, setTasks] = useState([]);
 
-    function loadTasks() {
-        const saved = localStorage.getItem("gradiumx-tasks");
-        setTasks(saved ? JSON.parse(saved) : []);
-    }
-
     useEffect(() => {
-        loadTasks();
-
-        function handleUpdate() {
-            loadTasks();
+        function loadTasks() {
+            const saved = localStorage.getItem("gradiumx-tasks");
+            setTasks(saved ? JSON.parse(saved) : []);
         }
 
-        window.addEventListener("gradiumx-tasks-updated", handleUpdate);
+        loadTasks();
+        window.addEventListener("gradiumx-tasks-updated", loadTasks);
+
         return () =>
-            window.removeEventListener("gradiumx-tasks-updated", handleUpdate);
+            window.removeEventListener("gradiumx-tasks-updated", loadTasks);
     }, []);
-
-    const pendingTasks = tasks.filter((t) => !t.done);
-
-    if (pendingTasks.length === 0) return null;
 
     return (
         <Draggable>
             <div
                 style={{
-                    background: "rgba(255,255,255,0.12)",
-                    backdropFilter: "blur(16px)",
-                    padding: 14,
-                    borderRadius: 14,
+                    background: "rgba(25,25,25,0.65)",
+                    backdropFilter: "blur(18px)",
+                    padding: 20,
+                    borderRadius: 18,
+                    minWidth: 260,
                     color: "white",
-                    fontSize: 13,
-                    width: 260,
+                    fontFamily: fonts.body,
                 }}
             >
-                <h4 style={{ marginBottom: 8 }}>📋 Tasks</h4>
+                {/* Title */}
+                <div
+                    style={{
+                        fontSize: 20,
+                        fontWeight: 600,
+                        marginBottom: 12,
+                        fontFamily: fonts.title,
+                        letterSpacing: 0.3,
+                    }}
+                >
+                    📝 Tasks
+                </div>
 
-                {pendingTasks.slice(0, 6).map((task, index) => (
+                {/* Task List */}
+                {tasks.length === 0 && (
+                    <div style={{ opacity: 0.6, fontSize: 15 }}>
+                        No tasks yet
+                    </div>
+                )}
+
+                {tasks.slice(0, 5).map((task, index) => (
                     <div
                         key={index}
                         style={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            opacity: 0.9,
-                            marginBottom: 4,
+                            fontSize: 16,
+                            marginBottom: 8,
+                            opacity: task.done ? 0.5 : 1,
+                            textDecoration: task.done ? "line-through" : "none",
+                            lineHeight: 1.4,
                         }}
                     >
                         • {task.text}
                     </div>
                 ))}
-
-                {pendingTasks.length > 6 && (
-                    <div style={{ opacity: 0.6 }}>
-                        +{pendingTasks.length - 6} more...
-                    </div>
-                )}
             </div>
         </Draggable>
     );
