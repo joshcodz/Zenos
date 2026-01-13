@@ -4,10 +4,11 @@ import Dock from "./components/Dock";
 import PomodoroWidget from "./components/PomodoroWidget";
 import TodoWidget from "./components/TodoWidget";
 import DigitalClock from "./components/DigitalClock";
-import MiniPlayer from "./components/MiniPlayer";
 import BackgroundSelector from "./components/BackgroundSelector";
 import VideoCreditToast from "./components/VideoCreditToast";
 import FullscreenToggle from "./components/FullscreenToggle";
+import AmbientMixer from "./components/AmbientMixer.jsx";
+import MusicPanel from "./components/MusicPanel.jsx";
 
 export default function App() {
     const [background, setBackground] = useState(
@@ -68,7 +69,9 @@ export default function App() {
             <DigitalClock />
             <PomodoroWidget />
             <TodoWidget />
-            <MiniPlayer />
+
+            <AmbientMixer/>
+            <MusicPanel/>
 
             {/* Dock */}
             <Dock />

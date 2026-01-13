@@ -28,9 +28,9 @@ export default function TodoWidget() {
         <Draggable>
             <div
                 style={{
-                    background: "rgba(25,25,25,0.65)",
-                    backdropFilter: "blur(18px)",
-                    padding: 20,
+                    background: "rgba(255,255,255,0.12)",
+                    backdropFilter: "blur(16px)",
+                    padding: 23,
                     borderRadius: 18,
                     minWidth: 260,
                     color: "white",
@@ -52,7 +52,7 @@ export default function TodoWidget() {
 
                 {/* Task List */}
                 {tasks.length === 0 && (
-                    <div style={{ opacity: 0.6, fontSize: 15 }}>
+                    <div style={{ opacity: 0.7, fontSize: 15 }}>
                         No tasks yet
                     </div>
                 )}
