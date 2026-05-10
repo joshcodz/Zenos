@@ -1,48 +1,33 @@
 import { useEffect, useState } from "react";
+import { Maximize, Minimize } from "lucide-react";
 
 export default function FullscreenToggle() {
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
-        const onChange = () => {
+        function onFullscreenChange() {
             setIsFullscreen(!!document.fullscreenElement);
-        };
-        document.addEventListener("fullscreenchange", onChange);
-        return () =>
-            document.removeEventListener("fullscreenchange", onChange);
+        }
+
+        document.addEventListener("fullscreenchange", onFullscreenChange);
+        return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
     }, []);
 
     function toggleFullscreen() {
         if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
+            document.documentElement.requestFullscreen().catch(() => {});
         } else {
-            document.exitFullscreen();
+            document.exitFullscreen().catch(() => {});
         }
     }
 
     return (
         <button
             onClick={toggleFullscreen}
-            title="Toggle Fullscreen"
-            style={{
-                position: "fixed",
-                right: 18,
-                top: 18,
-                width: 46,
-                height: 46,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.18)",
-                backdropFilter: "blur(14px)",
-                border: "1px solid rgba(255,255,255,0.25)",
-                color: "white",
-                fontSize: 18,
-                cursor: "pointer",
-                zIndex: 10000,
-                boxShadow: "0 0 20px rgba(255,255,255,0.35)",
-                transition: "0.25s ease",
-            }}
+            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+            className="w-10 h-10 flex items-center justify-center rounded-full text-white hover:bg-white/20 transition-all"
         >
-            {isFullscreen ? "🡼" : "⛶"}
+            {isFullscreen ? <Minimize size={20} strokeWidth={2} /> : <Maximize size={20} strokeWidth={2} />}
         </button>
     );
 }

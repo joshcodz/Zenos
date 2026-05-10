@@ -1,36 +1,31 @@
 import { useEffect, useState } from "react";
-
-import pomodoroIcon from "../assets/icons/pomodoro.png";
-import tasksIcon from "../assets/icons/tasks.png";
-import notesIcon from "../assets/icons/notes.png";
-import musicIcon from "../assets/icons/music.png";
+import { Timer, CheckSquare, FileText, Music } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Pomodoro from "./Pomodoro";
 import Todo from "./Todo";
 import Notes from "./Notes";
 import MusicPanel from "./MusicPanel";
 
-const icons = [
-    { name: "Pomodoro", icon: pomodoroIcon },
-    { name: "Tasks", icon: tasksIcon },
-    { name: "Notes", icon: notesIcon },
-    { name: "Music", icon: musicIcon },
+const dockItems = [
+    { name: "Pomodoro", icon: Timer },
+    { name: "Tasks", icon: CheckSquare },
+    { name: "Notes", icon: FileText },
+    { name: "Music", icon: Music },
 ];
 
 export default function Dock() {
     const [visible, setVisible] = useState(false);
     const [activePanel, setActivePanel] = useState(null);
 
-    /* Auto hide dock */
     useEffect(() => {
         function handleMouseMove(e) {
             const h = window.innerHeight;
-            setVisible(e.clientY > h - 80);
+            setVisible(e.clientY > h - 140);
         }
 
         window.addEventListener("mousemove", handleMouseMove);
-        return () =>
-            window.removeEventListener("mousemove", handleMouseMove);
+        return () => window.removeEventListener("mousemove", handleMouseMove);
     }, []);
 
     function togglePanel(name) {
@@ -38,128 +33,61 @@ export default function Dock() {
     }
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 9999,
-            }}
-        >
-            {/* 🚀 Embedded Panel */}
-            {activePanel && (
-                <div
-                    style={{
-                        position: "absolute",
-                        bottom: 76,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        background: "rgba(20,20,20,0.75)",
-                        backdropFilter: "blur(22px)",
-                        borderRadius: 18,
-                        padding: 14,
-                        width: 380,
-                        animation: "slideUp 0.25s ease-out",
-                    }}
-                >
-                    {activePanel === "Pomodoro" && (
-                        <Pomodoro embedded onClose={() => setActivePanel(null)} />
-                    )}
+        <div className="fixed bottom-0 left-0 right-0 z-[9999] flex flex-col items-center pointer-events-none">
+            {/* Embedded Panel */}
+            <AnimatePresence>
+                {activePanel && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 30, scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                        className="glass-panel rounded-[32px] p-6 w-[440px] mb-8 pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
+                    >
+                        {activePanel === "Pomodoro" && <Pomodoro embedded onClose={() => setActivePanel(null)} />}
+                        {activePanel === "Tasks" && <Todo embedded onClose={() => setActivePanel(null)} />}
+                        {activePanel === "Notes" && <Notes embedded onClose={() => setActivePanel(null)} />}
+                        {activePanel === "Music" && <MusicPanel onClose={() => setActivePanel(null)} />}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-                    {activePanel === "Tasks" && (
-                        <Todo embedded onClose={() => setActivePanel(null)} />
-                    )}
-
-                    {activePanel === "Notes" && (
-                        <Notes embedded onClose={() => setActivePanel(null)} />
-                    )}
-
-                    {activePanel === "Music" && (
-                        <MusicPanel onClose={() => setActivePanel(null)} />
-                    )}
-                </div>
-            )}
-
-            {/* 🧭 Dock */}
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    transform: visible
-                        ? "translateY(0)"
-                        : "translateY(calc(100% - 12px))",
-                    transition: "transform 0.3s ease",
-                    paddingBottom: 12,
-                }}
+            {/* Dock */}
+            <motion.div
+                initial={{ y: "100%" }}
+                animate={{ y: visible || activePanel ? 0 : "calc(100% - 10px)" }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                className="pb-6 pointer-events-auto"
             >
-                <div
-                    className="flex gap-6 px-8 py-3 rounded-2xl
-                     bg-white/10 backdrop-blur-xl
-                     border border-white/20 shadow-xl"
-                >
-                    {icons.map((icon) => {
-                        const active = activePanel === icon.name;
+                <div className="flex gap-4 px-6 py-4 glass-drop rounded-full items-end h-[85px]">
+                    {dockItems.map((item) => {
+                        const active = activePanel === item.name;
+                        const Icon = item.icon;
 
                         return (
-                            <div
-                                key={icon.name}
-                                onClick={() => togglePanel(icon.name)}
-                                className="group flex flex-col items-center cursor-pointer
-                           transition-all duration-300 ease-out
-                           hover:-translate-y-1 hover:scale-125"
+                            <motion.div
+                                key={item.name}
+                                onClick={() => togglePanel(item.name)}
+                                className="group relative flex flex-col items-center justify-end cursor-pointer"
+                                whileHover={{ scale: 1.25, y: -8 }}
+                                whileTap={{ scale: 0.95 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 17 }}
                             >
-                                <img
-                                    src={icon.icon}
-                                    draggable="false"
-                                    style={{
-                                        width: 30,
-                                        height: 30,
-                                        objectFit: "contain",
-                                        filter: active
-                                            ? "drop-shadow(0 0 6px white)"
-                                            : "none",
-                                    }}
-                                />
+                                {/* Tooltip */}
+                                <div className="absolute -top-12 opacity-0 group-hover:opacity-100 transition-opacity bg-white/20 backdrop-blur-xl text-white text-xs font-semibold px-4 py-2 rounded-full whitespace-nowrap pointer-events-none shadow-xl border border-white/30">
+                                    {item.name}
+                                </div>
 
-                                <span
-                                    className="text-[10px] text-white/70 mt-1 opacity-0
-                             transition-opacity duration-300
-                             group-hover:opacity-100"
-                                >
-                  {icon.name}
-                </span>
-
-                                {active && (
-                                    <div
-                                        style={{
-                                            width: 6,
-                                            height: 6,
-                                            borderRadius: 999,
-                                            background: "white",
-                                            marginTop: 4,
-                                        }}
-                                    />
-                                )}
-                            </div>
+                                <div className={`flex items-center justify-center w-[58px] h-[58px] rounded-full transition-all duration-300 ${active ? 'bg-white/20 shadow-[0_0_30px_rgba(255,255,255,0.3)] border border-white/40' : 'bg-white/5 border border-white/10 group-hover:bg-white/15 group-hover:border-white/30'}`}>
+                                    <Icon size={28} className={active ? "text-white" : "text-white/80"} strokeWidth={1.5} />
+                                </div>
+                                
+                                <div className={`w-1.5 h-1.5 rounded-full mt-2 transition-all duration-300 ${active ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,1)]' : 'bg-transparent'}`} />
+                            </motion.div>
                         );
                     })}
                 </div>
-            </div>
-
-            {/* 🎞 Animation */}
-            <style>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translate(-50%, 20px);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, 0);
-          }
-        }
-      `}</style>
+            </motion.div>
         </div>
     );
 }

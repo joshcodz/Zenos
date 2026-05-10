@@ -1,43 +1,22 @@
-import { useState } from "react";
+import { motion } from "framer-motion";
 
-export default function Draggable({ children }) {
-    const [pos, setPos] = useState({ x: window.innerWidth / 2 - 160, y: 200 });
-    const [dragging, setDragging] = useState(false);
-    const [offset, setOffset] = useState({ x: 0, y: 0 });
-
-    function onMouseDown(e) {
-        setDragging(true);
-        setOffset({
-            x: e.clientX - pos.x,
-            y: e.clientY - pos.y,
-        });
-    }
-
-    function onMouseMove(e) {
-        if (!dragging) return;
-        setPos({
-            x: e.clientX - offset.x,
-            y: e.clientY - offset.y,
-        });
-    }
-
-    function onMouseUp() {
-        setDragging(false);
-    }
-
+export default function Draggable({ children, defaultPosition = { x: window.innerWidth / 2 - 160, y: 200 } }) {
     return (
-        <div
-            style={{
-                position: "fixed",
-                left: pos.x,
-                top: pos.y,
-                cursor: dragging ? "grabbing" : "grab",
-                zIndex: 9999,
+        <motion.div
+            drag
+            dragMomentum={false}
+            initial={{ ...defaultPosition, opacity: 0, y: defaultPosition.y + 20 }}
+            animate={{ opacity: 1, y: defaultPosition.y }}
+            whileDrag={{ 
+                scale: 1.05, 
+                rotate: 2,
+                cursor: "grabbing",
+                filter: "drop-shadow(0 25px 35px rgba(0,0,0,0.5))"
             }}
-            onMouseMove={onMouseMove}
-            onMouseUp={onMouseUp}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="fixed cursor-grab touch-none z-[9900]"
         >
-            <div onMouseDown={onMouseDown}>{children}</div>
-        </div>
+            {children}
+        </motion.div>
     );
 }

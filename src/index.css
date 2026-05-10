@@ -1,3 +1,115 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: white;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(40px) saturate(150%);
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.5); /* Specular highlight */
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.4), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.4),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+  }
+  
+  .glass-drop {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(30px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 9999px; /* Pill / Circular */
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.2), 
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  
+  .glass-drop:hover {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3), 
+        0 0 40px rgba(255, 255, 255, 0.15), 
+        inset 0 1px 3px rgba(255, 255, 255, 0.7);
+    transform: translateY(-3px) scale(1.02);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #FFB6FF 0%, #B6E0FF 50%, #B6FFDB 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .aurora-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 15% 50%, rgba(255, 107, 255, 0.15), transparent 45%),
+      radial-gradient(circle at 85% 30%, rgba(107, 186, 255, 0.15), transparent 45%),
+      radial-gradient(circle at 50% 80%, rgba(107, 255, 201, 0.1), transparent 50%);
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 2;
+    animation: aurora-shift 15s ease-in-out infinite alternate;
+  }
+
+  .dark-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5); /* Enhances contrast for the glassy elements and aurora */
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  @keyframes aurora-shift {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.1) translate(-20px, 15px); }
+  }
+
+  .youtube-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+  }
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .youtube-bg {
+    height: 56.25vw;
+  }
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .youtube-bg {
+    width: 177.78vh;
+  }
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .youtube-bg {
+    height: 56.25vw;
+  }
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .youtube-bg {
+    width: 177.78vh;
+  }
+}

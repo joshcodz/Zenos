@@ -1,76 +1,72 @@
 import { useEffect, useState } from "react";
+import { CheckSquare, Circle, CheckCircle2 } from "lucide-react";
 import Draggable from "./Draggable";
 
 export default function TodoWidget() {
-    /* ---------------- FONT SYSTEM ---------------- */
-
-    const fonts = {
-        title: "'Montreal', system-ui, sans-serif",
-        body: "'Roboto', system-ui, sans-serif",
-    };
-
     const [tasks, setTasks] = useState([]);
+    const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
-        function loadTasks() {
+        function loadData() {
             const saved = localStorage.getItem("gradiumx-tasks");
             setTasks(saved ? JSON.parse(saved) : []);
+            setEnabled(localStorage.getItem("gradiumx-todo-enabled") === "true");
         }
 
-        loadTasks();
-        window.addEventListener("gradiumx-tasks-updated", loadTasks);
+        loadData();
+        
+        window.addEventListener("gradiumx-tasks-updated", loadData);
+        window.addEventListener("gradiumx-todo-update", loadData);
 
-        return () =>
-            window.removeEventListener("gradiumx-tasks-updated", loadTasks);
+        return () => {
+            window.removeEventListener("gradiumx-tasks-updated", loadData);
+            window.removeEventListener("gradiumx-todo-update", loadData);
+        };
     }, []);
 
+    if (!enabled) return null;
+
     return (
-        <Draggable>
-            <div
-                style={{
-                    background: "rgba(255,255,255,0.12)",
-                    backdropFilter: "blur(16px)",
-                    padding: 23,
-                    borderRadius: 18,
-                    minWidth: 260,
-                    color: "white",
-                    fontFamily: fonts.body,
-                }}
-            >
+        <Draggable defaultPosition={{ x: window.innerWidth - 320, y: 250 }}>
+            <div className="glass-panel p-6 rounded-[32px] min-w-[260px] transition-all duration-300 cursor-move pointer-events-auto">
                 {/* Title */}
-                <div
-                    style={{
-                        fontSize: 20,
-                        fontWeight: 600,
-                        marginBottom: 12,
-                        fontFamily: fonts.title,
-                        letterSpacing: 0.3,
-                    }}
-                >
-                    📝 Tasks
+                <div className="text-lg font-bold tracking-wide flex items-center gap-2 mb-4 border-b border-white/10 pb-3">
+                    <CheckSquare size={18} className="text-white" />
+                    <span className="gradient-text">Tasks</span>
                 </div>
 
                 {/* Task List */}
                 {tasks.length === 0 && (
-                    <div style={{ opacity: 0.7, fontSize: 15 }}>
-                        No tasks yet
+                    <div className="text-white/50 text-sm italic py-2">
+                        All caught up!
                     </div>
                 )}
 
-                {tasks.slice(0, 5).map((task, index) => (
-                    <div
-                        key={index}
-                        style={{
-                            fontSize: 16,
-                            marginBottom: 8,
-                            opacity: task.done ? 0.5 : 1,
-                            textDecoration: task.done ? "line-through" : "none",
-                            lineHeight: 1.4,
-                        }}
-                    >
-                        • {task.text}
+                <div className="space-y-3">
+                    {tasks.slice(0, 5).map((task, index) => (
+                        <div
+                            key={index}
+                            className={`flex items-start gap-3 text-[15px] font-medium transition-all duration-300 ${
+                                task.done ? "opacity-40 line-through" : "opacity-90"
+                            }`}
+                        >
+                            <div className="mt-[2px] shrink-0 text-white/80">
+                                {task.done ? (
+                                    <CheckCircle2 size={16} />
+                                ) : (
+                                    <Circle size={16} />
+                                )}
+                            </div>
+                            <span className="leading-tight">{task.text}</span>
+                        </div>
+                    ))}
+                </div>
+                
+                {tasks.length > 5 && (
+                    <div className="mt-4 pt-2 text-xs text-white/60 font-medium italic border-t border-white/10">
+                        + {tasks.length - 5} more tasks
                     </div>
-                ))}
+                )}
             </div>
         </Draggable>
     );

@@ -1,23 +1,11 @@
 import { useEffect, useState } from "react";
+import { Play, Pause, Eye, EyeOff } from "lucide-react";
 
 export default function Pomodoro({ onClose, embedded = false }) {
-    const fonts = {
-        body: "'Inter', system-ui, sans-serif",
-        mono: "'JetBrains Mono', monospace",
-    };
-
-    const [focusMin, setFocusMin] = useState(
-        Number(localStorage.getItem("gradiumx-focus")) || 25
-    );
-    const [breakMin, setBreakMin] = useState(
-        Number(localStorage.getItem("gradiumx-break")) || 5
-    );
-    const [running, setRunning] = useState(
-        localStorage.getItem("gradiumx-pomodoro-running") === "true"
-    );
-    const [enabled, setEnabled] = useState(
-        localStorage.getItem("gradiumx-pomodoro-enabled") === "true"
-    );
+    const [focusMin, setFocusMin] = useState(Number(localStorage.getItem("gradiumx-focus")) || 25);
+    const [breakMin, setBreakMin] = useState(Number(localStorage.getItem("gradiumx-break")) || 5);
+    const [running, setRunning] = useState(localStorage.getItem("gradiumx-pomodoro-running") === "true");
+    const [enabled, setEnabled] = useState(localStorage.getItem("gradiumx-pomodoro-enabled") === "true");
 
     const FOCUS = focusMin * 60;
     const BREAK = breakMin * 60;
@@ -48,89 +36,56 @@ export default function Pomodoro({ onClose, embedded = false }) {
         window.dispatchEvent(new Event("gradiumx-pomodoro-update"));
     }
 
-    const panelStyle = {
-        width: embedded ? 340 : 440,
-        padding: embedded ? 14 : 26,
-        borderRadius: 18,
-        background: "rgba(20,20,20,0.55)",
-        backdropFilter: "blur(18px)",
-        color: "white",
-        fontFamily: fonts.body,
-    };
-
-    const inputStyle = {
-        flex: 1,
-        height: 34,
-        padding: "4px 10px",
-        borderRadius: 10,
-        border: "1px solid rgba(255,255,255,0.25)",
-        outline: "none",
-        background: "rgba(255,255,255,0.14)",
-        color: "white",
-        fontSize: 13,
-        fontFamily: fonts.body,
-        backdropFilter: "blur(6px)",
-    };
-
-    const button = {
-        flex: 1,
-        height: 34,
-        borderRadius: 12,
-        border: "1px solid rgba(255,255,255,0.25)",
-        background: "rgba(255,255,255,0.15)",
-        color: "white",
-        fontSize: 13,
-        cursor: "pointer",
-        backdropFilter: "blur(8px)",
-    };
-
     return (
-        <div style={panelStyle}>
-            <div
-                style={{
-                    fontSize: embedded ? 34 : 52,
-                    textAlign: "center",
-                    fontFamily: fonts.mono,
-                    marginBottom: 10,
-                    letterSpacing: 2,
-                }}
-            >
+        <div className="flex flex-col text-white">
+            <div className="text-[64px] text-center font-light tracking-tight mb-8 mt-2 drop-shadow-xl">
                 25:00
             </div>
 
             {/* Inputs */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-                <input
-                    type="number"
-                    value={focusMin}
-                    onChange={(e) => setFocusMin(Number(e.target.value))}
-                    placeholder="Focus"
-                    style={inputStyle}
-                />
-
-                <input
-                    type="number"
-                    value={breakMin}
-                    onChange={(e) => setBreakMin(Number(e.target.value))}
-                    placeholder="Break"
-                    style={inputStyle}
-                />
+            <div className="flex gap-4 mb-8">
+                <div className="flex-1 relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-white/50 font-semibold">Focus</span>
+                    <input
+                        type="number"
+                        value={focusMin}
+                        onChange={(e) => setFocusMin(Number(e.target.value))}
+                        className="w-full h-12 pl-16 pr-4 rounded-full bg-white/10 border border-white/20 outline-none text-white text-base focus:bg-white/20 transition-all font-medium text-right shadow-inner"
+                    />
+                </div>
+                <div className="flex-1 relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-white/50 font-semibold">Break</span>
+                    <input
+                        type="number"
+                        value={breakMin}
+                        onChange={(e) => setBreakMin(Number(e.target.value))}
+                        className="w-full h-12 pl-16 pr-4 rounded-full bg-white/10 border border-white/20 outline-none text-white text-base focus:bg-white/20 transition-all font-medium text-right shadow-inner"
+                    />
+                </div>
             </div>
 
             {/* Buttons */}
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className="flex gap-4">
                 <button
-                    style={button}
+                    className="flex-1 h-12 flex items-center justify-center gap-2 rounded-full bg-white/20 border border-white/30 hover:bg-white/30 transition-all font-semibold text-sm shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
                     onClick={() => (running ? pauseTimer() : startTimer())}
                 >
+                    {running ? <Pause size={18} /> : <Play size={18} />}
                     {running ? "Pause" : "Start"}
                 </button>
 
-                <button style={button} onClick={toggleWidget}>
-                    {enabled ? "Hide Widget" : "Show Widget"}
+                <button 
+                    className={`flex-1 h-12 flex items-center justify-center gap-2 rounded-full border transition-all font-medium text-sm ${enabled ? 'bg-white/20 border-white/40 text-white shadow-[0_0_15px_rgba(255,255,255,0.2)]' : 'bg-transparent border-white/20 text-white/70 hover:bg-white/10'}`} 
+                    onClick={toggleWidget}
+                >
+                    {enabled ? <Eye size={18} /> : <EyeOff size={18} />}
+                    Widget
                 </button>
 
-                <button style={button} onClick={onClose}>
+                <button 
+                    className="flex-1 h-12 rounded-full bg-transparent border border-transparent hover:bg-white/10 transition-all font-medium text-sm text-white/70 hover:text-white"
+                    onClick={onClose}
+                >
                     Close
                 </button>
             </div>
