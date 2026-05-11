@@ -1,10 +1,11 @@
-import { Settings2, X, Sun, Moon } from "lucide-react";
+import { Settings2, X, Sun, Moon, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function SettingsWidget({ 
     auroraIntensity, setAuroraIntensity, 
     timeFormat, setTimeFormat, 
     showGreeting, setShowGreeting, 
+    showClock, setShowClock,
     onClose 
 }) {
     return (
@@ -61,6 +62,22 @@ export default function SettingsWidget({
                                 24h
                             </button>
                         </div>
+                    </div>
+
+                    {/* Show Clock Toggle */}
+                    <div className="flex items-center justify-between">
+                        <span className="text-white/90 font-medium">Display Clock</span>
+                        <button 
+                            onClick={() => setShowClock(!showClock)}
+                            className={`w-14 h-8 rounded-full transition-colors relative flex items-center px-1 border ${showClock ? 'bg-white/30 border-white/50' : 'bg-white/10 border-white/20'}`}
+                        >
+                            <motion.div 
+                                animate={{ x: showClock ? 24 : 0 }}
+                                className="w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center text-black"
+                            >
+                                <Clock size={14} />
+                            </motion.div>
+                        </button>
                     </div>
 
                     {/* Greeting Toggle */}

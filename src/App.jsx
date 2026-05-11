@@ -49,6 +49,9 @@ export default function App() {
     const [showGreeting, setShowGreeting] = useState(
         localStorage.getItem("gradiumx-greeting") !== "false"
     );
+    const [showClock, setShowClock] = useState(
+        localStorage.getItem("gradiumx-showclock") !== "false"
+    );
 
     /* Persist selections */
     useEffect(() => { localStorage.setItem("bg", background); }, [background]);
@@ -56,6 +59,7 @@ export default function App() {
     useEffect(() => { localStorage.setItem("gradiumx-aurora", auroraIntensity); }, [auroraIntensity]);
     useEffect(() => { localStorage.setItem("gradiumx-timeformat", timeFormat); }, [timeFormat]);
     useEffect(() => { localStorage.setItem("gradiumx-greeting", showGreeting); }, [showGreeting]);
+    useEffect(() => { localStorage.setItem("gradiumx-showclock", showClock); }, [showClock]);
 
     useEffect(() => {
         const handleZenToggle = () => setZenMode(z => !z);
@@ -167,13 +171,16 @@ export default function App() {
                         auroraIntensity={auroraIntensity} setAuroraIntensity={setAuroraIntensity}
                         timeFormat={timeFormat} setTimeFormat={setTimeFormat}
                         showGreeting={showGreeting} setShowGreeting={setShowGreeting}
+                        showClock={showClock} setShowClock={setShowClock}
                         onClose={() => setSettingsOpen(false)}
                     />
                 )}
             </div>
 
             {/* Elements that stay visible in Zen Mode */}
-            <DigitalClock timeFormat={timeFormat} showGreeting={showGreeting} zenMode={zenMode} />
+            {showClock && (
+                <DigitalClock timeFormat={timeFormat} showGreeting={showGreeting} zenMode={zenMode} />
+            )}
             <PomodoroWidget zenMode={zenMode} />
             <CommandPalette />
 

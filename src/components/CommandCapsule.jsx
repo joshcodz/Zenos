@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, CheckSquare, Settings2, Compass, PenTool, Focus, Quote, Link, CloudSun, Activity, Code, BookOpen, HeartPulse, Target } from "lucide-react";
+import { Timer, CheckSquare, Settings2, Compass, PenTool, Focus, Quote, Link, CloudSun, Activity, Code, BookOpen, HeartPulse, Target, Clock } from "lucide-react";
 
 export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setSettingsOpen }) {
     const [hovered, setHovered] = useState(false);
@@ -16,6 +16,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
         if (key.includes("todo")) window.dispatchEvent(new Event("gradiumx-todo-update"));
         if (key.includes("weather")) window.dispatchEvent(new Event("gradiumx-weather-update"));
         if (key.includes("analytics")) window.dispatchEvent(new Event("gradiumx-analytics-update"));
+        if (key.includes("showclock")) window.location.reload(); // Reload to re-init clock state properly
         if (key.includes("codescratchpad")) window.dispatchEvent(new Event("gradiumx-codescratchpad-update"));
         if (key.includes("flashcards")) window.dispatchEvent(new Event("gradiumx-flashcards-update"));
         if (key.includes("breathing")) window.dispatchEvent(new Event("gradiumx-breathing-update"));
@@ -132,6 +133,10 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
 
                             <div className="w-[1px] h-8 bg-white/20 mx-1" />
 
+                            <button onClick={() => toggleWidget("gradiumx-showclock")} className={`flex flex-col items-center gap-1 transition-colors ${localStorage.getItem("gradiumx-showclock") === "false" ? 'text-white/20' : 'text-white/70 hover:text-white'}`}>
+                                <Clock size={24} />
+                                <span className="text-[10px] font-bold tracking-widest uppercase">Clock</span>
+                            </button>
                             <button onClick={() => toggleWidget("gradiumx-pomodoro-enabled")} className="flex flex-col items-center gap-1 text-white/70 hover:text-white transition-colors">
                                 <Timer size={24} />
                                 <span className="text-[10px] font-bold tracking-widest uppercase">Focus</span>
