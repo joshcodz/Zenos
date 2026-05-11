@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 
 import CommandCapsule from "./components/CommandCapsule";
@@ -30,15 +30,18 @@ export default function App() {
     );
 
     const [background, setBackground] = useState(
-        localStorage.getItem("bg") || "/backgrounds/thumbs/skyline.mp4"
+        localStorage.getItem("bg") || "https://youtu.be/umYE_5LYg5I"
     );
 
     const [credit, setCredit] = useState(null);
     const [isMuted, setIsMuted] = useState(localStorage.getItem("gradiumx-muted") !== "false");
+    const [volume, setVolume] = useState(Number(localStorage.getItem("gradiumx-volume")) || 50);
 
     // Global Settings State
     const [zenMode, setZenMode] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
+
+    const videoRef = useRef(null);
 
     const [auroraIntensity, setAuroraIntensity] = useState(
         Number(localStorage.getItem("gradiumx-aurora")) || 0.5
@@ -56,6 +59,7 @@ export default function App() {
     /* Persist selections */
     useEffect(() => { localStorage.setItem("bg", background); }, [background]);
     useEffect(() => { localStorage.setItem("gradiumx-muted", isMuted); }, [isMuted]);
+    useEffect(() => { localStorage.setItem("gradiumx-volume", volume); }, [volume]);
     useEffect(() => { localStorage.setItem("gradiumx-aurora", auroraIntensity); }, [auroraIntensity]);
     useEffect(() => { localStorage.setItem("gradiumx-timeformat", timeFormat); }, [timeFormat]);
     useEffect(() => { localStorage.setItem("gradiumx-greeting", showGreeting); }, [showGreeting]);
@@ -64,20 +68,29 @@ export default function App() {
     useEffect(() => {
         const handleZenToggle = () => setZenMode(z => !z);
         const handleMuteToggle = () => setIsMuted(m => !m);
+        const handleVolumeChange = (e) => setVolume(e.detail);
         const handleIntentUpdate = () => {
             window.location.reload();
         };
 
         window.addEventListener("gradiumx-toggle-zen", handleZenToggle);
         window.addEventListener("gradiumx-toggle-mute", handleMuteToggle);
+        window.addEventListener("gradiumx-volume-update", handleVolumeChange);
         window.addEventListener("gradiumx-intent-update", handleIntentUpdate);
 
         return () => {
             window.removeEventListener("gradiumx-toggle-zen", handleZenToggle);
             window.removeEventListener("gradiumx-toggle-mute", handleMuteToggle);
+            window.removeEventListener("gradiumx-volume-update", handleVolumeChange);
             window.removeEventListener("gradiumx-intent-update", handleIntentUpdate);
         }
     }, []);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.volume = volume / 100;
+        }
+    }, [volume]);
 
     const isYouTube = background.includes("youtube.com") || background.includes("youtu.be");
     const videoId = isYouTube ? background.match(/(?:youtu\.be\/|v=)([\w-]+)/)?.[1] : null;
@@ -100,6 +113,7 @@ export default function App() {
                 />
             ) : (
                 <video
+                    ref={videoRef}
                     key={background}
                     autoPlay
                     loop

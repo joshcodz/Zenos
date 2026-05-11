@@ -1,57 +1,6 @@
 import { useState } from "react";
 
-const PANEL_WIDTH = 320;
-
 const backgrounds = [
-    {
-        name: "Skyline",
-        video: "/backgrounds/skyline.mp4",
-        thumb: "/backgrounds/thumbs/Skyline.png",
-        credits: {
-            text: "Nissan Skyline Pink Petals \n" + "π Wallpapers",
-            link: "https://www.youtube.com/@Pi_Wallpapers",
-        },
-
-    },
-    {
-        name: "Rain Window",
-        video: "/backgrounds/Rain Window.mp4",
-        thumb: "/backgrounds/thumbs/Rain Window.png",
-        credits: {
-            text: "Sleep Better on a Rainy Day",
-            link: "https://www.youtube.com/channel/UCWL-S-7ihaYtaPPbR1zehJg",
-        },
-    },
-    {
-        name: "Forest",
-        video: "/backgrounds/Forest.mp4",
-        thumb: "/backgrounds/thumbs/Forest.png",
-        credits: {
-            text:
-                "Gentle Woodland Stream",
-            link: "https://www.youtube.com/@NaturescapesYouTube",
-        },
-    },
-    {
-        name: "Night City",
-        video: "/backgrounds/Tokyo Night Ride🏯.mp4",
-        thumb: "/backgrounds/thumbs/Tokyo Night Ride 🏯.png",
-        credits: {
-            text:
-                "☔️Driving on the highway leading from Tokyo",
-            link: "https://www.youtube.com/@RainMan_JP",
-        },
-    },
-    {
-        name: "Cafe",
-        video: "/backgrounds/cafe.mp4",
-        thumb: "/backgrounds/thumbs/Cafe.png",
-        credits: {
-            text:
-                "Starbucks real coffee shop sounds",
-            link: "https://www.youtube.com/@ryzalyusoff",
-        },
-    },
     {
         name: "Lofi Girl",
         video: "https://youtu.be/umYE_5LYg5I",
@@ -59,6 +8,96 @@ const backgrounds = [
         credits: {
             text: "lofi hip hop radio 📚 - beats to relax/study to",
             link: "https://www.youtube.com/@LofiGirl",
+        },
+    },
+    {
+        name: "BMW M3 E46",
+        video: "https://youtu.be/IUfA_J4eES0",
+        thumb: "https://img.youtube.com/vi/IUfA_J4eES0/maxresdefault.jpg",
+        credits: {
+            text: "BMW M3 E46 - Aesthetic Drive",
+            link: "https://youtu.be/IUfA_J4eES0",
+        },
+    },
+    {
+        name: "Nissan Skyline",
+        video: "https://youtu.be/MObXBiYC_6Y",
+        thumb: "https://img.youtube.com/vi/MObXBiYC_6Y/maxresdefault.jpg",
+        credits: {
+            text: "Nissan Skyline R34 - Midnight City",
+            link: "https://youtu.be/MObXBiYC_6Y",
+        },
+    },
+    {
+        name: "Ambient Night",
+        video: "https://youtu.be/hMxlDbv-rec",
+        thumb: "https://img.youtube.com/vi/hMxlDbv-rec/maxresdefault.jpg",
+        credits: {
+            text: "Calm Night Atmosphere",
+            link: "https://youtu.be/hMxlDbv-rec",
+        },
+    },
+    {
+        name: "City Rain",
+        video: "https://youtu.be/2UxbnP-6ZlM",
+        thumb: "https://img.youtube.com/vi/2UxbnP-6ZlM/maxresdefault.jpg",
+        credits: {
+            text: "Rainy City Streets",
+            link: "https://youtu.be/2UxbnP-6ZlM",
+        },
+    },
+    {
+        name: "Study with Iron Man",
+        video: "https://youtu.be/U5oshAjfEYY",
+        thumb: "https://img.youtube.com/vi/U5oshAjfEYY/maxresdefault.jpg",
+        credits: {
+            text: "Iron Man - Stark Industries Ambience",
+            link: "https://youtu.be/U5oshAjfEYY",
+        },
+    },
+    {
+        name: "Evening Drive",
+        video: "https://youtu.be/31RokLEvUhg",
+        thumb: "https://img.youtube.com/vi/31RokLEvUhg/maxresdefault.jpg",
+        credits: {
+            text: "Golden Hour Drive",
+            link: "https://youtu.be/31RokLEvUhg",
+        },
+    },
+    {
+        name: "Cyberpunk City",
+        video: "https://youtu.be/1hsVWbcnEyc",
+        thumb: "https://img.youtube.com/vi/1hsVWbcnEyc/maxresdefault.jpg",
+        credits: {
+            text: "Cyberpunk 2077 Night City",
+            link: "https://youtu.be/1hsVWbcnEyc",
+        },
+    },
+    {
+        name: "Mountain View",
+        video: "https://youtu.be/Z90rTdVoomY",
+        thumb: "https://img.youtube.com/vi/Z90rTdVoomY/maxresdefault.jpg",
+        credits: {
+            text: "Alpine Serenity",
+            link: "https://youtu.be/Z90rTdVoomY",
+        },
+    },
+    {
+        name: "Quiet Room",
+        video: "https://youtu.be/E8fiyj1hNwk",
+        thumb: "https://img.youtube.com/vi/E8fiyj1hNwk/maxresdefault.jpg",
+        credits: {
+            text: "Cozy Studio Ambience",
+            link: "https://youtu.be/E8fiyj1hNwk",
+        },
+    },
+    {
+        name: "Starry Night",
+        video: "https://youtu.be/Yz-pDiVo6ZQ",
+        thumb: "https://img.youtube.com/vi/Yz-pDiVo6ZQ/maxresdefault.jpg",
+        credits: {
+            text: "Cosmic Wonder",
+            link: "https://youtu.be/Yz-pDiVo6ZQ",
         },
     },
 ];
@@ -99,9 +138,8 @@ export default function BackgroundSelector({ current, onChange }) {
                             }}
                         />
 
-                        {/* Label */}
-                        <div className="absolute bottom-3 left-0 w-full flex items-center justify-center pointer-events-none">
-                            <span className={`text-xs font-bold text-center tracking-wide uppercase ${active ? 'text-white' : 'text-white/80'}`} style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}>
+                        <div className="absolute bottom-3 left-0 w-full flex items-center justify-center pointer-events-none px-2 text-center">
+                            <span className={`text-[10px] font-bold tracking-wide uppercase ${active ? 'text-white' : 'text-white/80'}`} style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}>
                                 {bg.name}
                             </span>
                         </div>
