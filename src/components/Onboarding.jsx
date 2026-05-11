@@ -28,9 +28,16 @@ export default function Onboarding({ onComplete }) {
             if (intent === "Coding") {
                 localStorage.setItem("gradiumx-todo-enabled", "true");
                 localStorage.setItem("gradiumx-pomodoro-enabled", "true");
+                localStorage.setItem("gradiumx-codescratchpad-enabled", "true");
+                localStorage.setItem("gradiumx-heatmap-enabled", "true");
             } else if (intent === "Studying") {
                 localStorage.setItem("gradiumx-pomodoro-enabled", "true");
-                localStorage.setItem("gradiumx-weather-enabled", "true");
+                localStorage.setItem("gradiumx-flashcards-enabled", "true");
+                localStorage.setItem("gradiumx-study-enabled", "true");
+            } else if (intent === "Deep Work") {
+                localStorage.setItem("gradiumx-motivation-enabled", "true");
+                localStorage.setItem("gradiumx-breathing-enabled", "true");
+                localStorage.setItem("gradiumx-intention-enabled", "true");
             } else {
                 localStorage.setItem("gradiumx-motivation-enabled", "true");
             }

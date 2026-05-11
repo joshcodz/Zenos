@@ -16,6 +16,14 @@ import FullscreenToggle from "./components/FullscreenToggle";
 import MediaPill from "./components/MediaPill";
 import Onboarding from "./components/Onboarding";
 
+// New Workspace Widgets
+import GitHubHeatmap from "./components/GitHubHeatmap";
+import CodeScratchpad from "./components/CodeScratchpad";
+import FlashcardWidget from "./components/FlashcardWidget";
+import StudyTracker from "./components/StudyTracker";
+import BreathingWidget from "./components/BreathingWidget";
+import IntentionWidget from "./components/IntentionWidget";
+
 export default function App() {
     const [onboarded, setOnboarded] = useState(
         localStorage.getItem("gradiumx-onboarded") === "true"
@@ -31,7 +39,7 @@ export default function App() {
     // Global Settings State
     const [zenMode, setZenMode] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
-    
+
     const [auroraIntensity, setAuroraIntensity] = useState(
         Number(localStorage.getItem("gradiumx-aurora")) || 0.5
     );
@@ -52,13 +60,18 @@ export default function App() {
     useEffect(() => {
         const handleZenToggle = () => setZenMode(z => !z);
         const handleMuteToggle = () => setIsMuted(m => !m);
-        
+        const handleIntentUpdate = () => {
+            window.location.reload();
+        };
+
         window.addEventListener("gradiumx-toggle-zen", handleZenToggle);
         window.addEventListener("gradiumx-toggle-mute", handleMuteToggle);
-        
+        window.addEventListener("gradiumx-intent-update", handleIntentUpdate);
+
         return () => {
             window.removeEventListener("gradiumx-toggle-zen", handleZenToggle);
             window.removeEventListener("gradiumx-toggle-mute", handleMuteToggle);
+            window.removeEventListener("gradiumx-intent-update", handleIntentUpdate);
         }
     }, []);
 
@@ -141,6 +154,14 @@ export default function App() {
                 <WeatherWidget />
                 <AnalyticsWidget />
                 
+                {/* Workspace-specific widgets */}
+                <GitHubHeatmap />
+                <CodeScratchpad />
+                <FlashcardWidget />
+                <StudyTracker />
+                <BreathingWidget />
+                <IntentionWidget />
+
                 {settingsOpen && (
                     <SettingsWidget 
                         auroraIntensity={auroraIntensity} setAuroraIntensity={setAuroraIntensity}
@@ -155,7 +176,7 @@ export default function App() {
             <DigitalClock timeFormat={timeFormat} showGreeting={showGreeting} zenMode={zenMode} />
             <PomodoroWidget zenMode={zenMode} />
             <CommandPalette />
-            
+
             <CommandCapsule 
                 zenMode={zenMode} 
                 setZenMode={setZenMode} 

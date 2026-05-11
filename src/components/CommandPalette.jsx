@@ -30,11 +30,49 @@ export default function CommandPalette() {
     }, [open]);
 
     // Simulated commands
+    const setWorkspace = (intent) => {
+        localStorage.setItem("gradiumx-intent", intent);
+        // Reset widgets for the new workspace
+        if (intent === "Coding") {
+            localStorage.setItem("gradiumx-codescratchpad-enabled", "true");
+            localStorage.setItem("gradiumx-heatmap-enabled", "true");
+            localStorage.setItem("gradiumx-flashcards-enabled", "false");
+            localStorage.setItem("gradiumx-study-enabled", "false");
+            localStorage.setItem("gradiumx-breathing-enabled", "false");
+            localStorage.setItem("gradiumx-intention-enabled", "false");
+        } else if (intent === "Studying") {
+            localStorage.setItem("gradiumx-codescratchpad-enabled", "false");
+            localStorage.setItem("gradiumx-heatmap-enabled", "false");
+            localStorage.setItem("gradiumx-flashcards-enabled", "true");
+            localStorage.setItem("gradiumx-study-enabled", "true");
+            localStorage.setItem("gradiumx-breathing-enabled", "false");
+            localStorage.setItem("gradiumx-intention-enabled", "false");
+        } else if (intent === "Deep Work") {
+            localStorage.setItem("gradiumx-codescratchpad-enabled", "false");
+            localStorage.setItem("gradiumx-heatmap-enabled", "false");
+            localStorage.setItem("gradiumx-flashcards-enabled", "false");
+            localStorage.setItem("gradiumx-study-enabled", "false");
+            localStorage.setItem("gradiumx-breathing-enabled", "true");
+            localStorage.setItem("gradiumx-intention-enabled", "true");
+        }
+        window.dispatchEvent(new Event("gradiumx-intent-update"));
+        setOpen(false);
+    };
+
     const commands = [
         { name: "Toggle Zen Mode", action: () => window.dispatchEvent(new Event("gradiumx-toggle-zen")) },
+        { name: "Switch to Coding Workspace", action: () => setWorkspace("Coding") },
+        { name: "Switch to Studying Workspace", action: () => setWorkspace("Studying") },
+        { name: "Switch to Deep Work Workspace", action: () => setWorkspace("Deep Work") },
         { name: "Toggle Focus Timer", action: () => toggleWidget("gradiumx-pomodoro-enabled") },
         { name: "Toggle Weather", action: () => toggleWidget("gradiumx-weather-enabled") },
         { name: "Toggle Analytics", action: () => toggleWidget("gradiumx-analytics-enabled") },
+        { name: "Toggle Code Scratchpad", action: () => toggleWidget("gradiumx-codescratchpad-enabled") },
+        { name: "Toggle GitHub Heatmap", action: () => toggleWidget("gradiumx-heatmap-enabled") },
+        { name: "Toggle Flashcards", action: () => toggleWidget("gradiumx-flashcards-enabled") },
+        { name: "Toggle Study Tracker", action: () => toggleWidget("gradiumx-study-enabled") },
+        { name: "Toggle Breathing Guide", action: () => toggleWidget("gradiumx-breathing-enabled") },
+        { name: "Toggle Intention Setter", action: () => toggleWidget("gradiumx-intention-enabled") },
         { name: "Mute Background Audio", action: () => window.dispatchEvent(new Event("gradiumx-toggle-mute")) }
     ];
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Timer, CheckSquare, Settings2, Compass, PenTool, Focus, Quote, Link, CloudSun, Activity } from "lucide-react";
+import { Timer, CheckSquare, Settings2, Compass, PenTool, Focus, Quote, Link, CloudSun, Activity, Code, BookOpen, HeartPulse, Target } from "lucide-react";
 
 export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setSettingsOpen }) {
     const [hovered, setHovered] = useState(false);
@@ -16,6 +16,12 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
         if (key.includes("todo")) window.dispatchEvent(new Event("gradiumx-todo-update"));
         if (key.includes("weather")) window.dispatchEvent(new Event("gradiumx-weather-update"));
         if (key.includes("analytics")) window.dispatchEvent(new Event("gradiumx-analytics-update"));
+        if (key.includes("codescratchpad")) window.dispatchEvent(new Event("gradiumx-codescratchpad-update"));
+        if (key.includes("flashcards")) window.dispatchEvent(new Event("gradiumx-flashcards-update"));
+        if (key.includes("breathing")) window.dispatchEvent(new Event("gradiumx-breathing-update"));
+        if (key.includes("intention")) window.dispatchEvent(new Event("gradiumx-intention-update"));
+        if (key.includes("heatmap")) window.dispatchEvent(new Event("gradiumx-heatmap-update"));
+        if (key.includes("study")) window.dispatchEvent(new Event("gradiumx-study-update"));
     }
 
     return (
@@ -28,13 +34,14 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                 layout
                 initial={{ borderRadius: 9999 }}
                 animate={{
-                    width: hovered ? 600 : 160,
-                    height: hovered ? 80 : 48,
+                    width: hovered ? "min(90vw, 1000px)" : 160,
+                    height: hovered ? 92 : 48,
                     borderRadius: hovered ? 32 : 9999,
                     backgroundColor: zenMode ? (hovered ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0)") : "rgba(255,255,255,0.15)",
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                className={`glass-drop overflow-hidden flex items-center justify-center relative ${zenMode && !hovered ? '!border-transparent !shadow-none' : ''}`}
+                className={`glass-drop overflow-x-auto overflow-y-hidden flex items-center relative custom-scrollbar ${!hovered ? 'justify-center' : 'justify-start'} ${zenMode && !hovered ? '!border-transparent !shadow-none' : ''}`}
+                style={{ scrollBehavior: 'smooth' }}
             >
                 <AnimatePresence mode="wait">
                     {!hovered ? (
@@ -59,8 +66,61 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="flex items-center gap-6 w-full px-8 justify-between"
+                             className="flex items-center gap-5 w-full px-8 justify-start min-w-max pb-1"
                         >
+                            {/* Workspace Switcher */}
+                            <div className="flex items-center gap-3 bg-white/5 p-1.5 rounded-2xl border border-white/10 mr-2">
+                                <button 
+                                    onClick={() => {
+                                        localStorage.setItem("gradiumx-intent", "Coding");
+                                        localStorage.setItem("gradiumx-codescratchpad-enabled", "true");
+                                        localStorage.setItem("gradiumx-heatmap-enabled", "true");
+                                        localStorage.setItem("gradiumx-flashcards-enabled", "false");
+                                        localStorage.setItem("gradiumx-study-enabled", "false");
+                                        localStorage.setItem("gradiumx-breathing-enabled", "false");
+                                        localStorage.setItem("gradiumx-intention-enabled", "false");
+                                        window.dispatchEvent(new Event("gradiumx-intent-update"));
+                                    }}
+                                    className={`flex flex-col items-center gap-0.5 p-1.5 rounded-xl transition-all ${localStorage.getItem("gradiumx-intent") === "Coding" ? 'bg-[#B6E0FF]/20 text-[#B6E0FF]' : 'text-white/40 hover:text-white/70'}`}
+                                >
+                                    <Code size={18} />
+                                    <span className="text-[8px] font-black uppercase tracking-tighter">Code</span>
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        localStorage.setItem("gradiumx-intent", "Studying");
+                                        localStorage.setItem("gradiumx-codescratchpad-enabled", "false");
+                                        localStorage.setItem("gradiumx-heatmap-enabled", "false");
+                                        localStorage.setItem("gradiumx-flashcards-enabled", "true");
+                                        localStorage.setItem("gradiumx-study-enabled", "true");
+                                        localStorage.setItem("gradiumx-breathing-enabled", "false");
+                                        localStorage.setItem("gradiumx-intention-enabled", "false");
+                                        window.dispatchEvent(new Event("gradiumx-intent-update"));
+                                    }}
+                                    className={`flex flex-col items-center gap-0.5 p-1.5 rounded-xl transition-all ${localStorage.getItem("gradiumx-intent") === "Studying" ? 'bg-[#B6FFDB]/20 text-[#B6FFDB]' : 'text-white/40 hover:text-white/70'}`}
+                                >
+                                    <BookOpen size={18} />
+                                    <span className="text-[8px] font-black uppercase tracking-tighter">Study</span>
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        localStorage.setItem("gradiumx-intent", "Deep Work");
+                                        localStorage.setItem("gradiumx-codescratchpad-enabled", "false");
+                                        localStorage.setItem("gradiumx-heatmap-enabled", "false");
+                                        localStorage.setItem("gradiumx-flashcards-enabled", "false");
+                                        localStorage.setItem("gradiumx-study-enabled", "false");
+                                        localStorage.setItem("gradiumx-breathing-enabled", "true");
+                                        localStorage.setItem("gradiumx-intention-enabled", "true");
+                                        window.dispatchEvent(new Event("gradiumx-intent-update"));
+                                    }}
+                                    className={`flex flex-col items-center gap-0.5 p-1.5 rounded-xl transition-all ${localStorage.getItem("gradiumx-intent") === "Deep Work" ? 'bg-[#FFB6FF]/20 text-[#FFB6FF]' : 'text-white/40 hover:text-white/70'}`}
+                                >
+                                    <Target size={18} />
+                                    <span className="text-[8px] font-black uppercase tracking-tighter">Deep</span>
+                                </button>
+                            </div>
+
+                            <div className="w-[1px] h-8 bg-white/10 mx-1" />
                             {/* Focus/Zen Mode Toggle */}
                             <button 
                                 onClick={() => setZenMode(!zenMode)}
@@ -96,6 +156,25 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                                 <Activity size={24} />
                                 <span className="text-[10px] font-bold tracking-widest uppercase">Stats</span>
                             </button>
+
+                            <div className="w-[1px] h-8 bg-white/20 mx-1" />
+
+                             <button onClick={() => toggleWidget("gradiumx-codescratchpad-enabled")} className="flex flex-col items-center gap-1 text-white/70 hover:text-white transition-colors">
+                                 <Code size={24} />
+                                 <span className="text-[10px] font-bold tracking-widest uppercase">Code</span>
+                             </button>
+                             <button onClick={() => toggleWidget("gradiumx-flashcards-enabled")} className="flex flex-col items-center gap-1 text-white/70 hover:text-white transition-colors">
+                                 <BookOpen size={24} />
+                                 <span className="text-[10px] font-bold tracking-widest uppercase">Flashcards</span>
+                             </button>
+                             <button onClick={() => toggleWidget("gradiumx-breathing-enabled")} className="flex flex-col items-center gap-1 text-white/70 hover:text-white transition-colors">
+                                 <HeartPulse size={24} />
+                                 <span className="text-[10px] font-bold tracking-widest uppercase">Breathe</span>
+                             </button>
+                             <button onClick={() => toggleWidget("gradiumx-intention-enabled")} className="flex flex-col items-center gap-1 text-white/70 hover:text-white transition-colors">
+                                 <Target size={24} />
+                                 <span className="text-[10px] font-bold tracking-widest uppercase">Intention</span>
+                             </button>
 
                             <div className="w-[1px] h-8 bg-white/20 mx-1" />
 
