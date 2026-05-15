@@ -79,17 +79,22 @@ export default function App() {
         const handleIntentUpdate = () => {
             window.location.reload();
         };
+        const handleClockUpdate = () => {
+            setShowClock(localStorage.getItem("gradiumx-showclock") !== "false");
+        };
 
         window.addEventListener("gradiumx-toggle-zen", handleZenToggle);
         window.addEventListener("gradiumx-toggle-mute", handleMuteToggle);
         window.addEventListener("gradiumx-volume-update", handleVolumeChange);
         window.addEventListener("gradiumx-intent-update", handleIntentUpdate);
+        window.addEventListener("gradiumx-showclock-update", handleClockUpdate);
 
         return () => {
             window.removeEventListener("gradiumx-toggle-zen", handleZenToggle);
             window.removeEventListener("gradiumx-toggle-mute", handleMuteToggle);
             window.removeEventListener("gradiumx-volume-update", handleVolumeChange);
             window.removeEventListener("gradiumx-intent-update", handleIntentUpdate);
+            window.removeEventListener("gradiumx-showclock-update", handleClockUpdate);
         }
     }, []);
 
