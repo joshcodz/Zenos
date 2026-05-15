@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-    Timer, CheckSquare, Settings2, Compass, PenTool, Focus, Quote, Link, 
-    CloudSun, Activity, Code, BookOpen, HeartPulse, Target, Clock, 
+import {
+    Timer, CheckSquare, Settings2, Compass, PenTool, Focus, Quote, Link,
+    CloudSun, Activity, Code, BookOpen, HeartPulse, Target, Clock,
     Volume2, Image as ImageIcon, ChevronRight, X
 } from "lucide-react";
 
@@ -28,7 +28,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
     const toggleWidget = (key) => {
         const current = localStorage.getItem(key) === "true";
         localStorage.setItem(key, String(!current));
-        
+
         if (key.includes("pomodoro")) window.dispatchEvent(new Event("gradiumx-pomodoro-update"));
         if (key.includes("todo")) window.dispatchEvent(new Event("gradiumx-todo-update"));
         if (key.includes("weather")) window.dispatchEvent(new Event("gradiumx-weather-update"));
@@ -56,7 +56,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
     };
 
     return (
-        <div 
+        <div
             className="fixed top-8 left-1/2 -translate-x-1/2 z-[10001]"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => {
@@ -64,7 +64,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                 setSpacesOpen(false);
             }}
         >
-            <motion.div 
+            <motion.div
                 layout
                 initial={{ borderRadius: 9999 }}
                 animate={{
@@ -78,7 +78,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
             >
                 <AnimatePresence mode="wait">
                     {!hovered ? (
-                        <motion.div 
+                        <motion.div
                             key="collapsed"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -92,7 +92,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                             )}
                         </motion.div>
                     ) : (
-                        <motion.div 
+                        <motion.div
                             key="expanded"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -101,7 +101,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                         >
                             {/* Workspaces */}
                             <div className="flex items-center gap-4">
-                                <button 
+                                <button
                                     onClick={() => {
                                         localStorage.setItem("gradiumx-intent", "Coding");
                                         window.dispatchEvent(new Event("gradiumx-intent-update"));
@@ -111,7 +111,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                                     <Code size={18} />
                                     <span className="text-[8px] font-black uppercase tracking-tighter">Code</span>
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => {
                                         localStorage.setItem("gradiumx-intent", "Studying");
                                         window.dispatchEvent(new Event("gradiumx-intent-update"));
@@ -121,7 +121,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                                     <BookOpen size={18} />
                                     <span className="text-[8px] font-black uppercase tracking-tighter">Study</span>
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => {
                                         localStorage.setItem("gradiumx-intent", "Deep Work");
                                         window.dispatchEvent(new Event("gradiumx-intent-update"));
@@ -137,7 +137,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
 
                             {/* Spaces Trigger */}
                             <div className="relative">
-                                <button 
+                                <button
                                     onClick={() => setSpacesOpen(!spacesOpen)}
                                     className={`flex flex-col items-center gap-1 transition-all ${spacesOpen ? 'text-[#B6E0FF]' : 'text-white/70 hover:text-white'}`}
                                 >
@@ -148,7 +148,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                                 {/* Spaces Preview Dropdown */}
                                 <AnimatePresence>
                                     {spacesOpen && (
-                                        <motion.div 
+                                        <motion.div
                                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -176,7 +176,7 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
                             {/* Volume */}
                             <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-2xl border border-white/5">
                                 <Volume2 size={18} className="text-white/60" />
-                                <input 
+                                <input
                                     type="range"
                                     min="0" max="100"
                                     value={volume}
@@ -216,14 +216,14 @@ export default function CommandCapsule({ zenMode, setZenMode, settingsOpen, setS
 
                             {/* System */}
                             <div className="flex items-center gap-4">
-                                <button 
+                                <button
                                     onClick={() => setZenMode(!zenMode)}
                                     className={`flex flex-col items-center gap-1 transition-all ${zenMode ? 'text-[#B6E0FF]' : 'text-white/70 hover:text-white'}`}
                                 >
                                     <Focus size={18} />
                                     <span className="text-[10px] font-bold tracking-widest uppercase">{zenMode ? 'Exit' : 'Zen'}</span>
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => setSettingsOpen(true)}
                                     className={`flex flex-col items-center gap-1 transition-all ${settingsOpen ? 'text-white' : 'text-white/70 hover:text-white'}`}
                                 >
