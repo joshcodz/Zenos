@@ -1,6 +1,7 @@
 <div align="center">
   <br />
-  <img src="public/favicon.ico" alt="Zenos Logo" width="100" />
+  <img width="454" height="454" alt="image" src="https://github.com/user-attachments/assets/9b113fc4-3413-4af0-b051-bab6d2007a4b" />
+
   <h1>✨ Zenos</h1>
   <p><strong>The Intelligent Operating System for Deep Work & Uncompromised Focus</strong></p>
   
