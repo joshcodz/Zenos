@@ -65,6 +65,13 @@ export default function App() {
     useEffect(() => { localStorage.setItem("gradiumx-greeting", showGreeting); }, [showGreeting]);
     useEffect(() => { localStorage.setItem("gradiumx-showclock", showClock); }, [showClock]);
 
+    const handleSignOut = () => {
+        localStorage.removeItem("gradiumx-onboarded");
+        localStorage.removeItem("gradiumx-username");
+        localStorage.removeItem("gradiumx-intent");
+        setOnboarded(false);
+    };
+
     useEffect(() => {
         const handleZenToggle = () => setZenMode(z => !z);
         const handleMuteToggle = () => setIsMuted(m => !m);
@@ -187,6 +194,7 @@ export default function App() {
                         showGreeting={showGreeting} setShowGreeting={setShowGreeting}
                         showClock={showClock} setShowClock={setShowClock}
                         onClose={() => setSettingsOpen(false)}
+                        onSignOut={handleSignOut}
                     />
                 )}
             </div>

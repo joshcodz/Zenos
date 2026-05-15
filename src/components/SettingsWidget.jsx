@@ -1,4 +1,4 @@
-import { Settings2, X, Sun, Moon, Clock } from "lucide-react";
+import { Settings2, X, Sun, Moon, Clock, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function SettingsWidget({ 
@@ -6,7 +6,8 @@ export default function SettingsWidget({
     timeFormat, setTimeFormat, 
     showGreeting, setShowGreeting, 
     showClock, setShowClock,
-    onClose 
+    onClose,
+    onSignOut
 }) {
     return (
         <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-black/40 backdrop-blur-md pointer-events-auto transition-all duration-500">
@@ -94,6 +95,17 @@ export default function SettingsWidget({
                                 {showGreeting ? <Sun size={14} /> : <Moon size={14} />}
                             </motion.div>
                         </button>
+                    </div>
+
+                    <div className="pt-4 border-t border-white/10">
+                        <button 
+                            onClick={onSignOut}
+                            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/50 text-white/60 hover:text-red-400 transition-all group"
+                        >
+                            <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
+                            <span className="font-semibold tracking-wide">Reset Identity</span>
+                        </button>
+                        <p className="text-[10px] text-white/20 text-center mt-3 uppercase tracking-[0.2em]">Returns to onboarding sequence</p>
                     </div>
                 </div>
             </motion.div>
